@@ -1,0 +1,173 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link  rel = "stylesheet" href = "./option-window.css" >
+</head>
+<body >  
+<div class='header' style="-webkit-app-region: drag"  >           
+    <div class='title'>设置属性</div>          
+    <button class="btn-close" onclick="hidewindow()" style="-webkit-app-region: no-drag">close</button>        
+</div>      
+<div id = "app"   >
+    <table id="blgl"   >
+            <caption>变量关联<br>  </caption>             
+            <tr>
+                <td >变量名:</td>
+                <td > <input  placeholder="变量名" v-model = "varName"></td>
+            </tr>
+            <tr>
+                <td>显示小数位：</td>
+                <td> <input type="number" min="0" max="5"   placeholder="0" v-model = "displayDecimals"></td>
+            </tr>
+            </table>
+    <table id = "xssz" >
+        <caption>显示设置</caption>
+        <tr>
+            <td >背景色:</td>
+            <td >  <input type="color" v-model = "backgroundColor"  placeholder="背景色"></td>
+        </tr>
+        <tr>
+            <td>完全透明:</td>
+            <td>  <input type="range" min="0" max="1" step="0.1"  v-model = "transparent" ><label>不透明</label></td>                    
+        </tr>
+        <tr>
+            <td>文字颜色：</td>
+            <td> <input type="color" v-model = "color" placeholder="文字颜色"></td>
+        </tr>
+        <tr>   
+             <td>宽：</td>           
+            <td> <input type="number" v-model = "width"></td>
+        </tr>
+        <tr>
+            <td>高：</td>
+            <td> <input type="number" v-model = "height" ></td>
+        </tr>
+        <tr>                   
+            <td><button v-on:click="iApplyOption">应用</button></td>
+            <td>  </td>
+        </tr>
+    </table>               
+</div>
+   
+<script src = "./vue.js"> </script>
+
+<script type="text/javascript"   >
+    const { remote } = require('electron')
+    //hide self
+    function hidewindow()
+    {
+        //remote.getCurrentWindow().hide()
+        remote.getCurrentWindow().close()
+    }
+
+  
+    //menu
+    const { Menu, MenuItem } = remote
+    const menu = new Menu()
+    menu.append(new MenuItem({ label: 'showdevtool', click() { remote.getCurrentWindow().webContents.toggleDevTools()} }))
+    menu.append(new MenuItem({ type: 'separator' }))
+    
+    window.addEventListener('contextmenu', (e) => {
+    e.preventDefault()
+    menu.popup({ window: remote.getCurrentWindow() })
+    }, false)
+
+    //onload
+    window.onload = function() {
+       var mycom = localStorage.getItem('elementStyle')
+
+    }
+
+    // vue
+   new Vue({
+    el: '#app',    
+    data: {       
+        backgroundColor: '#ffffff',
+        transparent:  0, 
+        color: '#ffffff', 
+        width:1,
+        height:2,
+        varName:null,
+        displayDecimals:null,
+
+    },
+    mounted:function(){  
+  
+
+        var jsonText = localStorage.getItem('elementStyle')
+        var com = JSON.parse(jsonText)
+
+        this.width = parseInt(com.width)  
+        this.height = parseInt(com.height)
+        this.backgroundColor = this.rgb_a_2hex(com.backgroundColor)
+        this.transparent = this.rgb_a_2transparent(com.backgroundColor)
+        this.color = this.rgb_a_2hex(com.color)
+        
+        this.varName = com.varName
+        this.displayDecimals = com.displayDecimals
+        console.log("this.transparent")
+        console.log(this.transparent)
+
+    },
+    methods:{        
+
+        iApplyOption(event)
+        {
+        const { remote } = require('electron')
+
+         var jsonText = JSON.stringify(this.$data);
+         localStorage.setItem('elementStyleFeedBack',jsonText)
+         //alert(jsonText)
+         var currentWindowBrowser = remote.getCurrentWindow()
+         var parentWindowBrowser = currentWindowBrowser.getParentWindow()
+         parentWindowBrowser.emit("refreshTarget")
+
+        
+
+        },
+
+                // rgb(a)颜色获取透明度
+        rgb_a_2transparent:function (color) {
+            var rgba = color.split(',');
+            if (rgba.length == 3){
+                return 1;
+            }
+            else{
+                var a = rgba[3].split(')')[0]
+                var nA = parseInt(a);         
+                return nA;
+            }
+
+        },
+
+              // 将rgb(a)颜色转成hex (#ffffff)
+        rgb_a_2hex:function (color) {
+            var rgba = color.split(',');
+
+            var r = parseInt(rgba[0].split('(')[1]);
+            var g = parseInt(rgba[1]);
+            
+            var b
+            if (rgba.length == 3)
+            {
+            b = parseInt(rgba[2].split(')')[0]);  
+            }
+            else
+            {
+            b = parseInt(rgba[2]); 
+            }
+            var hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b ).toString(16).slice(1);
+            return hex;
+        },
+
+
+
+    }, //methods
+
+    })
+</script>
+ 
+
+
+</body>
+</html>

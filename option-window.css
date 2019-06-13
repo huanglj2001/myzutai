@@ -1,0 +1,55 @@
+body{
+    margin:0;
+    padding:0;
+    font-size: 80%
+}
+
+#app{
+    margin:5px;
+   
+}
+table
+{
+  background-color: darkgray;
+ 
+  border:3px solid rgb(167, 102, 17);
+  padding:10px;  
+  border-collapse:collapse;
+  table-layout:fixed;
+}
+caption{
+    padding-top:10px;
+}
+
+td{
+    border: thin dotted gray;    
+}
+
+
+td:nth-child(odd){
+    width:100px;    
+    text-align: right;
+}
+td:nth-child(even){
+    width:150px;   
+    text-align: left; 
+}
+
+.header{           
+    height: 25px;    
+    background-color: rgb(198, 212, 198);
+}
+.title{
+    position: absolute;
+    top:2px;
+    left:2px;
+    
+}
+.btn-close{
+    position: absolute;
+    top:2px;
+    right:2px;
+}
+#backgroundImage{
+    width:100px;
+  }

@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link  rel = "stylesheet" href = "./my-excute.css" >
+    <link rel = "import" href = "contents.html"/>
+    <script>
+            var {RadialGauge,Animation } = require("./gauge.min.js")
+            require("./js/my-canvas-observer.js")
+    </script> 
+</head>
+<body>    
+    <div id ="container"> </div>       
+  
+   <script type="text/javascript" >  
+
+        const { remote } = require('electron')
+        //menu
+        const { Menu, MenuItem,BrowserWindow } = remote
+        const menu = new Menu()
+        menu.append(new MenuItem({ label: 'showDevTools',  click() { remote.getCurrentWindow().webContents.toggleDevTools()} }))
+        menu.append(new MenuItem({ type: 'separator' }))
+        menu.append(new MenuItem({ label: 'reload', click() { loadexternal()} }))
+        window.addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+        menu.popup({ window: remote.getCurrentWindow() })
+        }, false)
+
+        // file read  Sync
+        function loadexternal(){
+            var fs = require('fs');
+            var path = require('path');           
+            var sourcePath = path.join(__dirname,  'contents.html');
+            var data = fs.readFileSync( sourcePath, 'utf-8')                
+            document.getElementById('container').innerHTML = data
+        }
+        //ajaxLoad Sync
+        function loadexternal_2(){
+            var xhr='';
+            if (window.XMLHttpRequest){
+                xhr=new XMLHttpRequest();
+            }else{
+                xhr=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xhr.onreadystatechange=function(){
+                if(xhr.readyState==4){
+                    if(xhr.status==200){
+                        document.getElementById('container').innerHTML = xhr.responseText  
+                    }
+                }
+            }
+            var url = "./contents.html"
+            xhr.open('get',url,false);
+            xhr.send();
+        }
+        
+        //import html element
+        function loadexternal_3(){
+            var post = document.querySelector("link[rel = 'import']").import;
+            document.querySelector("#container").innerHTML = post.body.innerHTML  
+        }
+        loadexternal() //执行后，会触发DOMContentLoaded
+        setInterval(() => {
+                var gauges = document.querySelectorAll("[data-type ='radial-gauge']")
+                gauges.forEach(function(g) { 
+                //g.dataset.value = Math.random()*(g.getAttribute("data-max-value") - g.getAttribute("data-min-value") ) + g.getAttribute("data-min-value") ;
+                g.dataset.value = Math.random()*(g.dataset.maxValue - g.dataset.minValue ) + g.dataset.minValue;
+                
+            })
+    
+            }, 1000);       
+    
+   </script>     
+
+
+   <script >
+       /*
+       var redis = require('redis');
+        var client = redis.createClient(6379,'localhost');
+        client.set('I','1.23456');
+
+        var cloneNodes = document.querySelectorAll(".clone")
+
+        setInterval(() => {     
+                 client.set('I',Math.random()*10); //test
+                cloneNodes.forEach(function(ele) {                
+                //var value =  Math.random()*(g.dataset.maxValue - g.dataset.minValue ) + g.dataset.minValue;
+                //var value =  Math.random()*100              
+                var varName = ele.getAttribute('varName')                
+                var value
+                client.get(varName,function (err,v) {
+                    if(err){
+                        console.warn(err);
+                        return;
+                    }
+                    if(!v)
+                    {
+                        console.warn(varName,' is ',v)
+                        return;
+                    }
+
+                    value = parseFloat(v)
+
+                    //deal decimal dots
+                    var displayDecimals = ele.getAttribute("displayDecimals")
+                    value = value.toFixed(parseInt(displayDecimals))//todo
+                   //set ele value
+                    ele.value = value
+                    if(ele.dataset.value)
+                    {ele.dataset.value = value}
+                })
+
+            })
+    
+        }, 3000);
+        */
+   </script>
+
+</body>
+</html>

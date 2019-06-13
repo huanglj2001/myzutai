@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link  rel = "stylesheet" href = "./option-window.css" >
+</head>
+<body >  
+<div class='header' style="-webkit-app-region: drag"  >           
+    <div class='title'>设置属性</div>          
+    <button class="btn-close" onclick="hidewindow()" style="-webkit-app-region: no-drag">close</button>        
+</div>      
+<div id = "app"   >
+    <table id = "xssz" >
+        <caption>显示设置</caption>
+        <tr>
+            <td >背景色:</td>
+            <td >  <input type="color" v-model = "backgroundColor"  placeholder="背景色"></td>
+        </tr>
+        <tr>
+            <td>背景图案：</td>
+            <td> <input id ='backgroundImage' type="file"  ></td>
+        </tr>
+        <tr>   
+             <td>宽：</td>           
+            <td> <input type="number" v-model = "width"></td>
+        </tr>
+        <tr>
+            <td>高：</td>
+            <td> <input type="number" v-model = "height" ></td>
+        </tr>
+        <tr>                   
+            <td><button v-on:click="iApplyOption">应用</button></td>
+            <td>  </td>
+        </tr>
+    </table>               
+</div>
+   
+<script src = "./vue.js"> </script>
+
+<script type="text/javascript"   >
+    const { remote } = require('electron')
+    //hide self
+    function hidewindow()
+    {
+        //remote.getCurrentWindow().hide()
+        remote.getCurrentWindow().close()
+    }
+
+    //menu
+    const { Menu, MenuItem } = remote
+    const menu = new Menu()
+    menu.append(new MenuItem({ label: 'showdevtool', click() { remote.getCurrentWindow().webContents.toggleDevTools()} }))
+    menu.append(new MenuItem({ type: 'separator' }))
+    menu.append(new MenuItem({ label: 'MenuItem2', type: 'checkbox', checked: true }))
+    window.addEventListener('contextmenu', (e) => {
+    e.preventDefault()
+    menu.popup({ window: remote.getCurrentWindow() })
+    }, false)
+
+    //onload
+    window.onload = function() {
+       var mycom = localStorage.getItem('elementStyle')
+
+    }
+
+    // vue
+   new Vue({
+    el: '#app',    
+    data: {       
+        backgroundColor: '#ffffff',       
+        backgroundImage:null,       
+        width:1,
+        height:2,
+
+    },
+    mounted:function(){  
+  
+
+        var jsonText = localStorage.getItem('elementStyle')
+        var com = JSON.parse(jsonText)
+
+        this.width = parseInt(com.width)  
+        this.height = parseInt(com.height)
+        this.backgroundColor = this.rgba2hex(com.backgroundColor)  
+        this.backgroundImage = com.backgroundImage
+  
+    },
+    methods:{        
+
+        iApplyOption(event)
+        {       
+
+        const { remote } = require('electron')
+
+        var backgroundImageControl = document.getElementById("backgroundImage")
+        var files = backgroundImageControl.files
+            
+        if(files.length>0)
+        {
+            var fileName = files[0].name
+            var sourceFilePath = files[0].path
+            this.backgroundImage = fileName;
+            var fs = require('fs');
+            var path = require('path');           
+            var destPath = path.join(__dirname,  fileName);
+            if (destPath!=sourceFilePath){//self not copy self
+                var readStream = fs.createReadStream(sourceFilePath);
+                var writeStream = fs.createWriteStream(destPath);
+                readStream.pipe(writeStream);
+            }
+        }
+
+         var jsonText = JSON.stringify(this.$data);
+         localStorage.setItem('elementStyleFeedBack',jsonText)
+         //alert(jsonText)
+         var currentWindowBrowser = remote.getCurrentWindow()
+         var parentWindowBrowser = currentWindowBrowser.getParentWindow()
+         parentWindowBrowser.emit("refreshTarget")
+
+        },
+
+                // rgba颜色获取透明度
+        rgba2transparent:function (color) {
+            var rgba = color.split(',');
+            var a = rgba[3].split(')')[0]
+            var nA = parseInt(a);         
+            return nA;
+        },
+
+              // 将rgb(a)颜色转成hex (#ffffff)
+        rgba2hex:function (color) {
+            var rgb = color.split(',');
+
+            var r = parseInt(rgb[0].split('(')[1]);
+            var g = parseInt(rgb[1]);
+            
+            var b
+            if (rgb.length == 3)
+            {
+            b = parseInt(rgb[2].split(')')[0]);  
+            }
+            else
+            {
+            b = parseInt(rgb[2]); 
+            }
+            var hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b ).toString(16).slice(1);
+            return hex;
+        },
+              // 将rgb(a)颜色转成hex (#ffffff)
+        rgb2hex:function (color) {
+            var rgb = color.split(',');
+
+            var r = parseInt(rgb[0].split('(')[1]);
+            var g = parseInt(rgb[1]);
+            
+            var b
+            if (rgb.length == 3)
+            {
+            b = parseInt(rgb[2].split(')')[0]);  
+            }
+            else
+            {
+            b = parseInt(rgb[2]); 
+            }
+            var hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b ).toString(16).slice(1);
+            return hex;
+        },
+
+
+
+    }, //methods
+
+    })
+</script>
+ 
+
+
+</body>
+</html>

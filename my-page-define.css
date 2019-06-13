@@ -1,0 +1,141 @@
+
+*{
+  margin: 0px;
+  padding: 0px;
+}
+body{
+  
+
+  font-size: 1em;  
+  font-family: Consolas, 'Courier New', monospace;
+  background-color:rgb(7, 71, 23);
+  color:rgb(124,124,124);
+
+  user-select:none;
+
+/*
+  overflow-x: hidden; 
+  overflow-y: hidden;*/
+}
+
+#app {
+  position: absolute;
+  background-color:rgb(26, 150, 92);
+
+  top:30px;
+  left:0px;
+ 
+  height:calc(100% - 30px); 
+  width: 100%;
+
+}
+
+
+#lcell
+{  
+  position:absolute;
+  left:0;
+  top:0;
+ 
+  vertical-align: top;
+  width: 300px;  
+  height: 100%;
+  background-color:rgb(38,38,38);
+ 
+
+  overflow-x: auto; 
+  overflow-y: auto;
+ 
+  
+}
+
+#mcell
+{
+  position:absolute; 
+  left:300px;
+  top:0;
+  width: 10px; 
+  height: 100%;
+  background-color:rgb(38,38,38);
+  cursor:col-resize;
+}
+#rcell
+{ 
+  position:relative;     
+  margin-left: 310px; 
+  /*width: calc(100% - 310px); */
+  
+  height: 100%;
+  background-color:rgb(107, 75, 221);
+  
+  overflow-x: auto; 
+  overflow-y: auto;
+
+}
+
+
+#rcellbackgroud
+{      
+  vertical-align: top;
+  width: 1500px; 
+  height: 1000px;     
+  background-color: rgb(30,30,30);
+  color:rgb(156,220,254);
+
+}
+/* no border use padding*/
+#lcell #functionarear {
+  padding:10px 5px ;
+}
+/*has border use margin*/
+#lcell #functionarear * {
+  margin:5px 5px ;
+  cursor: pointer;
+  
+}
+#lcell #functionarear button {
+  font-size: .8em;
+  cursor: pointer;
+  outline: none;
+  padding: 0.2em 0.5em;  
+  border-radius: 2em;
+  display: inline-block;
+  color: #fff;
+  background-color:rgb(38,38,38);
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+  border: 1px solid #4fc08d;
+}
+
+#lcell #elementarear *
+{
+  float:left;
+  display: block;
+  width:60px;
+  margin:10px 10px;
+  cursor: pointer;
+}
+
+
+/*scroll*/
+.scrollStyle::-webkit-scrollbar {/*滚动条整体样式*/
+  width: 15px;     /*高宽分别对应横竖滚动条的尺寸*/
+  height: 15px;
+}
+.scrollStyle::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+  /*border-radius: 10px;
+ 
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);*/
+  background: rgb(80, 80, 80);
+}
+.scrollStyle::-webkit-scrollbar-track {/*滚动条里面轨道*/
+  /*-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 10px;*/
+  border-left:1px rgb(100,100,100) solid;
+  
+  background: rgb(30,30,30);
+}
+
+.scrollStyle::-webkit-scrollbar-corner{
+  background: rgb(30,30,30);
+}

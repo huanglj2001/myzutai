@@ -1,0 +1,37 @@
+body{
+  margin:0px;
+  font-size: 1em;  
+  font-family: Consolas, 'Courier New', monospace
+}
+
+#container{
+    position: absolute;
+    top:0px;
+   /*margin-left: 300px;
+    margin-top: 20px;*/
+    vertical-align: top;
+    width: 1500px;
+    height: 1000px;
+    padding:3px;  
+    color: chartreuse;
+    background-color: rgb(30,30,30);
+    color:rgb(156,220,254);
+  
+}
+
+#rcell
+{
+  position: absolute;
+  top:0px;
+ /*margin-left: 300px;
+  margin-top: 20px;*/
+  vertical-align: top;
+  width: 1500px;
+  height: 1000px;
+  padding:3px;  
+  color: chartreuse;
+  background-color: rgb(30,30,30);
+  color:rgb(156,220,254);
+
+  /*background-image: url(baidu_jgylogo3.gif);*/
+}
